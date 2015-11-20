@@ -21,7 +21,6 @@ Insert this into your `keybindings.json`:
 ```
 {
     "key": "ctrl+q",
-    "command": "extension.gotoLastEditLocation",
-    "when": "editorTextFocus"
+    "command": "extension.gotoLastEditLocation"
 }
 ```
