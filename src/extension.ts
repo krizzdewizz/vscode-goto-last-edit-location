@@ -1,5 +1,7 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+/**
+ * Provides the 'Goto last edit location' command.
+ */
+
 import * as vscode from 'vscode';
 
 interface LastEditLocation {
@@ -10,11 +12,13 @@ interface LastEditLocation {
 	}
 }
 
-
 let lastEditLocation: LastEditLocation = null;
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+function revealLastEditLocation(editor: vscode.TextEditor): void {
+	const pos = lastEditLocation.pos;
+	editor.revealRange(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+}
+
 export function activate(context: vscode.ExtensionContext) {
 
 	const documentChangeListener = vscode.workspace.onDidChangeTextDocument(e => {
@@ -24,19 +28,20 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const start = change.range.start;
-		lastEditLocation = { file: e.document.fileName, pos: { line: start.line, character: start.character } };
+		lastEditLocation = { 
+			file: e.document.fileName, 
+			pos: { line: start.line, character: start.character }
+		};
 	});
 
 	const command = vscode.commands.registerCommand('extension.gotoLastEditLocation', () => {
 		if (!lastEditLocation) {
 			return;
 		}
-		vscode.workspace.openTextDocument(lastEditLocation.file).then(doc => {
-			vscode.window.showTextDocument(doc).then(ed => {
-				const pos = lastEditLocation.pos;
-				ed.revealRange(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
-			});
-		});
+		vscode.workspace.openTextDocument(lastEditLocation.file)
+			.then(vscode.window.showTextDocument)
+			.then(revealLastEditLocation)
+		;
 	});
 
 	context.subscriptions.push(documentChangeListener, command);
