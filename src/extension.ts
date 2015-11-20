@@ -3,11 +3,8 @@
  */
 
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
 
-let lastLocation = {
+const lastLocation = {
 	file: '', // empty if not changed anything yet
 	line: 0,
 	character: 0
@@ -46,6 +43,6 @@ export function activate(context: vscode.ExtensionContext) {
 			;
 		}
 	});
-	
+
 	context.subscriptions.push(documentChangeListener, command);
 }
