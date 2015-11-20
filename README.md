@@ -14,7 +14,7 @@ Copy the folder `dist/goto-last-edit-location` folder to your VS Code extension 
 - Windows: `%USERPROFILE%\.vscode\extensions`
 - Mac/Linux: `$HOME/.vscode/extensions`
 
-By pressing `F1` you should now see 'Goto last edit location' command.
+By pressing `F1` you should now see 'Goto last edit location' command in the drop down.
 
 ## Assign a shortcut
 Insert this into your `keybindings.json`: 
