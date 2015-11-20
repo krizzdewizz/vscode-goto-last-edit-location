@@ -7,3 +7,19 @@ Visual Studio Code extension that provides the "Goto last edit location" command
 
 ## Build
 - run `npm run compile`.
+
+## Installation
+Copy the folder `dist/goto-last-edit-location` folder to your VS Code extension folder:
+
+- Windows: `%USERPROFILE%\.vscode\extensions`
+- Mac/Linux: `$HOME/.vscode/extensions`
+
+## Assign a shortcut
+Insert this into your `keybindings.json`: 
+```
+{
+    "key": "ctrl+q",
+    "command": "extension.gotoLastEditLocation",
+    "when": "editorTextFocus"
+}
+```
