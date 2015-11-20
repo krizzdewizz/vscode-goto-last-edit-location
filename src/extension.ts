@@ -3,20 +3,19 @@
  */
 
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 
-interface LastEditLocation {
-	file: string;
-	pos: {
-		line: number;
-		character: number;
-	}
-}
-
-let lastEditLocation: LastEditLocation = null;
+let lastLocation = {
+	file: '', // empty if not changed anything yet
+	line: 0,
+	character: 0
+};
 
 function revealLastEditLocation(editor: vscode.TextEditor): void {
-	const pos = lastEditLocation.pos;
-	editor.revealRange(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+	editor.selection = new vscode.Selection(lastLocation.line, lastLocation.character, lastLocation.line, lastLocation.character);
+	editor.revealRange(new vscode.Range(lastLocation.line, lastLocation.character, lastLocation.line, lastLocation.character));
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -28,21 +27,25 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const start = change.range.start;
-		lastEditLocation = { 
-			file: e.document.fileName, 
-			pos: { line: start.line, character: start.character }
-		};
+		lastLocation.file = e.document.fileName;
+		lastLocation.line = start.line;
+		lastLocation.character = start.character + change.text.length;
 	});
 
 	const command = vscode.commands.registerCommand('extension.gotoLastEditLocation', () => {
-		if (!lastEditLocation) {
+		if (!lastLocation.file) {
 			return;
 		}
-		vscode.workspace.openTextDocument(lastEditLocation.file)
-			.then(vscode.window.showTextDocument)
-			.then(revealLastEditLocation)
-		;
+		const activeEditor = vscode.window.activeTextEditor;
+		if (activeEditor && activeEditor.document.fileName === lastLocation.file) {
+			revealLastEditLocation(activeEditor);
+		} else {
+			vscode.workspace.openTextDocument(lastLocation.file)
+				.then(vscode.window.showTextDocument)
+				.then(revealLastEditLocation)
+			;
+		}
 	});
-
+	
 	context.subscriptions.push(documentChangeListener, command);
 }

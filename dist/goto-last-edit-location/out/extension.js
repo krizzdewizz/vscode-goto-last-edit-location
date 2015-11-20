@@ -2,10 +2,14 @@
  * Provides the 'Goto last edit location' command.
  */
 var vscode = require('vscode');
-var lastEditLocation = null;
+var lastLocation = {
+    file: '',
+    line: 0,
+    character: 0
+};
 function revealLastEditLocation(editor) {
-    var pos = lastEditLocation.pos;
-    editor.revealRange(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+    editor.selection = new vscode.Selection(lastLocation.line, lastLocation.character, lastLocation.line, lastLocation.character);
+    editor.revealRange(new vscode.Range(lastLocation.line, lastLocation.character, lastLocation.line, lastLocation.character));
 }
 function activate(context) {
     var documentChangeListener = vscode.workspace.onDidChangeTextDocument(function (e) {
@@ -14,18 +18,23 @@ function activate(context) {
             return;
         }
         var start = change.range.start;
-        lastEditLocation = {
-            file: e.document.fileName,
-            pos: { line: start.line, character: start.character }
-        };
+        lastLocation.file = e.document.fileName;
+        lastLocation.line = start.line;
+        lastLocation.character = start.character + change.text.length;
     });
     var command = vscode.commands.registerCommand('extension.gotoLastEditLocation', function () {
-        if (!lastEditLocation) {
+        if (!lastLocation.file) {
             return;
         }
-        vscode.workspace.openTextDocument(lastEditLocation.file)
-            .then(vscode.window.showTextDocument)
-            .then(revealLastEditLocation);
+        var activeEditor = vscode.window.activeTextEditor;
+        if (activeEditor && activeEditor.document.fileName === lastLocation.file) {
+            revealLastEditLocation(activeEditor);
+        }
+        else {
+            vscode.workspace.openTextDocument(lastLocation.file)
+                .then(vscode.window.showTextDocument)
+                .then(revealLastEditLocation);
+        }
     });
     context.subscriptions.push(documentChangeListener, command);
 }
