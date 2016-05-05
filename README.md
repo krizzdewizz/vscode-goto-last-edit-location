@@ -2,24 +2,23 @@
 Visual Studio Code extension that provides the "Goto last edit location" command.
 
 ## Installation
-Copy the folder `dist/goto-last-edit-location` folder to your VS Code extension folder:
+Download the [extension](https://github.com/krizzdewizz/vscode-goto-last-edit-location/raw/master/dist/vscode-goto-last-edit-location-0.0.1.vsix) and run
 
-- Windows: `%USERPROFILE%\.vscode\extensions`
-- Mac/Linux: `$HOME/.vscode/extensions`
+`code vscode-goto-last-edit-location-0.0.1.vsix`
 
-By pressing `F1` you should now see 'Goto last edit location' command in the drop down.
+By pressing `F1` you should now see 'Goto last edit location' command in the drop down:
 
-## Assign a shortcut
-Insert this into your `keybindings.json`:
-```
-{
-    "key": "ctrl+q",
-    "command": "extension.gotoLastEditLocation"
-}
-```
+![Command](doc/command.png "Goto last edit location command")
+
+Press `CTRL+Q` to invoke the command.
+
 ## Development setup
 - run `npm install` inside the project folder
 - open VS Code on the project folder
 
 ## Build
 - run `npm run compile`.
+
+## Package
+- run `vsce package` and move the created `.vsix` to the `dist` folder. If a new version is published, don't forget to update this documentation.
+
