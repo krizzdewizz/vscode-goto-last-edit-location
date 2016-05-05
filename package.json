@@ -9,6 +9,14 @@
 	"categories": [
 		"Other"
 	],
+	"bugs": {
+		"url": "https://github.com/krizzdewizz/vscode-goto-last-edit-location/issues"
+	},
+	"homepage": "https://github.com/krizzdewizz/vscode-goto-last-edit-location",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/krizzdewizz/vscode-goto-last-edit-location.git"
+	},
 	"activationEvents": [
 		"*"
 	],
