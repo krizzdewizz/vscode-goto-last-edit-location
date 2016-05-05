@@ -1,7 +1,7 @@
 {
 	"name": "goto-last-edit-location",
 	"description": "Visual Studio Code extension that provides the 'Goto last edit location' command",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"publisher": "krizzdewizz",
 	"engines": {
 		"vscode": "^0.10.1"
