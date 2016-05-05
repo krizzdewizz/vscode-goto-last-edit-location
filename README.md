@@ -6,6 +6,8 @@ Download the [extension](https://github.com/krizzdewizz/vscode-goto-last-edit-lo
 
 `code goto-last-edit-location-0.0.1.vsix`
 
+Restart Visual Studio Code.
+
 By pressing `F1` you should now see 'Goto last edit location' command in the drop down:
 
 ![Command](doc/command.png "Goto last edit location command")
