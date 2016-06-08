@@ -7,6 +7,15 @@ After installing and pressing `F1`, you should see the 'Goto last edit location'
 
 Press `CTRL+Q` to invoke the command.
 
+## Release Info
+
+v0.2.0
+- Changed keybinding to `CTRL+Q` on Mac.
+- Changed keybinding to be always active.
+
+v0.1.0
+- Initial release
+
 ## Development setup
 - run `npm install` inside the project folder
 - open VS Code on the project folder

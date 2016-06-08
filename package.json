@@ -1,7 +1,7 @@
 {
 	"name": "goto-last-edit-location",
 	"description": "Visual Studio Code extension that provides the 'Goto last edit location' command",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"publisher": "krizzdewizz",
 	"engines": {
 		"vscode": "^0.10.1"
@@ -32,8 +32,7 @@
 			{
 				"command": "extension.gotoLastEditLocation",
 				"key": "ctrl+q",
-				"mac": "ctrl+q",
-				"when": "editorTextFocus"
+				"mac": "ctrl+q"
 			}
 		]
 	},
