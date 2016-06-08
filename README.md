@@ -9,7 +9,7 @@ Press `CTRL+Q` to invoke the command.
 
 ## Release Info
 v0.2.0
-- Changed keybinding to `CTRL+Q` on Mac ([Pull Request](https://github.com/krizzdewizz/vscode-goto-last-edit-location/pull/1))
+- Changed keybinding to `CTRL+Q` on Mac ([pull request](https://github.com/krizzdewizz/vscode-goto-last-edit-location/pull/1))
 - Changed keybinding to be always active.
 
 v0.1.0
