@@ -4,15 +4,67 @@
 
 import * as vscode from 'vscode';
 
-const lastLocation = {
-	file: '', // empty if not changed anything yet
-	line: 0,
-	character: 0
-};
+let locationHistory = [];
+let historyIndex = 0;
+
+function history(index) {
+	if (index < 0 || index >= locationHistory.length) {
+		return null;
+	}
+
+	return locationHistory[index];
+}
+
+function currentEdit() {
+	return history(historyIndex);
+}
+
+function moveEditHistoryBackward() {
+	const lastEdit = history(historyIndex - 1);
+
+	if (lastEdit) {
+		historyIndex--;
+		return lastEdit;
+	}
+}
+
+function moveEditHistoryForward() {
+	const nextEdit = history(historyIndex + 1);
+
+	if (nextEdit) {
+		historyIndex++;
+		return nextEdit;
+	}
+}
+
+function updateEditCharacter(character) {
+	locationHistory[historyIndex].character = character;
+}
+
+function newEdit(file, line, character) {
+	const edit = currentEdit();
+
+	if (edit && edit.file === file && edit.line === line) {
+		updateEditCharacter(character);
+	} else {
+		locationHistory.push({
+			file: file,
+			line: line,
+			character: character
+		});
+		historyIndex = locationHistory.length - 1;
+	}
+}
 
 function revealLastEditLocation(editor: vscode.TextEditor): void {
-	editor.selection = new vscode.Selection(lastLocation.line, lastLocation.character, lastLocation.line, lastLocation.character);
-	editor.revealRange(new vscode.Range(lastLocation.line, lastLocation.character, lastLocation.line, lastLocation.character));
+	const edit = currentEdit();
+
+	if (!edit) {
+		return;
+	}
+
+	editor.selection = new vscode.Selection(edit.line, edit.character, edit.line, edit.character);
+	editor.revealRange(new vscode.Range(edit.line, edit.character, edit.line, edit.character));
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -24,25 +76,50 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		const start = change.range.start;
-		lastLocation.file = e.document.fileName;
-		lastLocation.line = start.line;
-		lastLocation.character = start.character + change.text.length;
+		const file = e.document.fileName;
+		const line = start.line;
+		const character = start.character + change.text.length;
+
+		if (change.text !== " " && change.text !== "\n") {
+			newEdit(file, line, character);
+		}
 	});
 
-	const command = vscode.commands.registerCommand('extension.gotoLastEditLocation', () => {
-		if (!lastLocation.file) {
+	const previousEditCommand = vscode.commands.registerCommand('extension.moveCursorToPreviousEdit', () => {
+		const edit = moveEditHistoryBackward();
+
+		if (!edit) {
 			return;
 		}
+
 		const activeEditor = vscode.window.activeTextEditor;
-		if (activeEditor && activeEditor.document.fileName === lastLocation.file) {
+		if (activeEditor && activeEditor.document.fileName === edit.file) {
 			revealLastEditLocation(activeEditor);
 		} else {
-			vscode.workspace.openTextDocument(lastLocation.file)
+			vscode.workspace.openTextDocument(edit.file)
 				.then(vscode.window.showTextDocument)
 				.then(revealLastEditLocation)
-			;
+				;
 		}
 	});
 
-	context.subscriptions.push(documentChangeListener, command);
+	const nextEditCommand = vscode.commands.registerCommand('extension.moveCursorToNextEdit', () => {
+		const edit = moveEditHistoryForward();
+
+		if (!edit) {
+			return;
+		}
+
+		const activeEditor = vscode.window.activeTextEditor;
+		if (activeEditor && activeEditor.document.fileName === edit.file) {
+			revealLastEditLocation(activeEditor);
+		} else {
+			vscode.workspace.openTextDocument(edit.file)
+				.then(vscode.window.showTextDocument)
+				.then(revealLastEditLocation)
+				;
+		}
+	});
+
+	context.subscriptions.push(documentChangeListener, previousEditCommand, nextEditCommand);
 }
