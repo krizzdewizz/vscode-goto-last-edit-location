@@ -42,6 +42,10 @@ function updateEditCharacter(character) {
 }
 
 function newEdit(file, line, character) {
+	if (historyIndex < locationHistory.length - 1) {
+		locationHistory = locationHistory.splice(0, historyIndex + 1);
+	}
+
 	const edit = currentEdit();
 
 	if (edit && edit.file === file && edit.line === line) {
