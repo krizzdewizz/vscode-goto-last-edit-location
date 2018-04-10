@@ -24,15 +24,24 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.gotoLastEditLocation",
-				"title": "Goto last edit location"
+				"command": "extension.moveCursorToPreviousEdit",
+				"title": "Move cursor to previous edit location"
+			},
+			{
+				"command": "extension.moveCursorToNextEdit",
+				"title": "Move cursor to next edit location"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "extension.gotoLastEditLocation",
-				"key": "ctrl+q",
-				"mac": "ctrl+q"
+				"command": "extension.moveCursorToPreviousEdit",
+				"key": "ctrl+win+[",
+				"mac": "ctrl+cmd+["
+			},
+			{
+				"command": "extension.moveCursorToNextEdit",
+				"key": "ctrl+win+]",
+				"mac": "ctrl+cmd+]"
 			}
 		]
 	},
